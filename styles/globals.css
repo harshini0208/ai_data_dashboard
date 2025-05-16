@@ -1,0 +1,92 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap");
+
+:root {
+  --brandColor: #ff8533;
+  --brandColorHover: #ff6600;
+  --lightBg: #fff;
+  --textColor: #000;
+  --textColorMuted: #434462;
+  --textButton: #fff;
+
+  --bgColor: #fff;
+  --secondaryColor: #ffd9b3;
+  --brandBlue: #ff8533;
+  --blueLink: #ff8533;
+
+  --brandBlueHover: #ff6600;
+  --blueLinkHover: #ff6600;
+  --darkGrey: #6e7086;
+  --borderColor: #e0e0e0;
+  --texture: none;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+
+  font-family: "Roboto", sans-serif;
+}
+
+body {
+  background: #fff;
+  background-image: var(--texture);
+  background-size: 4px 4px;
+  color: var(--textColor);
+  overflow-y: hidden;
+  max-height: 100vh;
+
+  /* background-image:  linear-gradient(135deg, #e7eefc 20%, transparent 5%), linear-gradient(225deg, #e7eefc 20%, transparent 5%), linear-gradient(45deg, #e7eefc 20%, transparent 5%), linear-gradient(315deg, #e7eefc 20%, var(--bgColor) 5%);
+  background-position:  5px 0, 5px 0, 0 0, 0 0;
+  background-size: 5px 5px;
+  background-repeat: repeat; */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: all ease .5s;
+}
+
+a:hover {
+  color: var(--brandBlueHover);
+}
+
+hr {
+  border: 0;
+  border-bottom: 1px solid var(--borderColor);
+  width: 100%;
+}
+
+.trash img {
+  filter: hue-rotate(360deg) saturate(6);
+}
+
+input, textarea{
+  background-color: var(--lightBg);
+  color: var(--textColor);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bgColor: #fff;
+    --textColor: #000;
+    --lightBg: #fff;
+    --borderColor: #e0e0e0;
+    --textColorMuted: #434462;
+    --blueLink: #ff8533;
+    --blueLinkHover: #ff6600;
+  }
+  body {
+    background: #fff;
+  }
+  .trash img {
+    filter: none;
+  }
+}
