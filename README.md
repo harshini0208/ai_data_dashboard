@@ -4,8 +4,6 @@ AI Dashboard Generator is an open-source dashboard generator based on Next.js an
 
 It utilizes a prompt engineered to make the AI reply using JSON to create simple and useful visualizations. You do not need to add any requirements for the titles or content, as the AI does it all by using the data you provide. You can upload your data in CSV files and then easily visualize your data and gain valuable insights into your business or organization.
 
-You can try out the AI Dashboard Generator for yourself at https://labs.leniolabs.com/data-dashboard/.
-
 ## Installation
 
 To get started with the AI Dashboard Generator, you'll need to have Node.js and npm installed on your machine. Once you've done that, you can install the dependencies by running the following command in your terminal:
