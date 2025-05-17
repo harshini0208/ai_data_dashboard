@@ -5,6 +5,13 @@ import { parseFunc } from "../../utils/parseFunc";
 import { ErrorBoundary } from "../layout/ErrorBoundary";
 import { formatNumber } from "../../utils/numberFormatter";
 
+type MetricValue = {
+  value?: number;
+  total?: number;
+  amount?: number;
+  [key: string]: any;
+};
+
 export function PerformanceIndicator(
   props: React.PropsWithChildren<{
     config: IKPI;
@@ -17,6 +24,15 @@ export function PerformanceIndicator(
 
   const value = React.useMemo(() => {
     const val = myEvalFunction(props.data);
+    if (typeof val === "object" && val !== null) {
+      // If the value is an object, try to get a displayable value
+      const metricVal = val as MetricValue;
+      if ("value" in metricVal && typeof metricVal.value === "number") return formatNumber(metricVal.value);
+      if ("total" in metricVal && typeof metricVal.total === "number") return formatNumber(metricVal.total);
+      if ("amount" in metricVal && typeof metricVal.amount === "number") return formatNumber(metricVal.amount);
+      // Convert object to string if no numeric value found
+      return JSON.stringify(val);
+    }
     if (typeof val === "number") return formatNumber(val);
     return val;
   }, [myEvalFunction, props.data]);

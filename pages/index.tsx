@@ -31,6 +31,8 @@ import { getRandomDataset, sample } from "../openai/sample";
 import { IDashboard, IDataset, ISettings } from "../types";
 import { isDataValid, parseData, stringifyData } from "../utils/parseData";
 import gtag from "../lib/gtag";
+import { queryCompletionsChat } from "../openai/queryCompletionsChat";
+import { getPromptModel } from "../openai/prompts";
 
 export default function Home() {
   const [view, setView] = React.useState("dashboard");
@@ -120,6 +122,42 @@ export default function Home() {
   const handleClearContext = React.useCallback(() => {
     setUserContext("");
   }, []);
+
+  const handleQuestion = React.useCallback(async (question: string) => {
+    if (!data || !dashboard) return "";
+
+    gtag.report("event", "ask_question", {
+      event_category: "dashboard",
+      event_label: "question_asked",
+    });
+
+    try {
+      const response = await queryCompletionsChat(
+        getPromptModel(settings.model),
+        [
+          {
+            question: `Given this dashboard configuration and dataset, please answer the following question: ${question}
+
+Dataset sample:
+${stringifyData(data.slice(0, 5), ",")}
+
+Dashboard configuration:
+${JSON.stringify(dashboard, null, 2)}`,
+          },
+        ],
+        { 
+          apikey: settings.apikey, 
+          model: settings.model 
+        }
+      );
+
+      const answer = response?.[0].reply || "No answer available";
+      return answer;
+    } catch (error) {
+      console.error('Error asking question:', error);
+      throw new Error('Failed to get an answer. Please try again.');
+    }
+  }, [data, dashboard, settings]);
 
   return (
     <>
@@ -226,7 +264,7 @@ export default function Home() {
               <DataLoadedMessage onAnalyze={handleAnalyze} />
             ) : null}
             {dashboard && data && view === "dashboard" ? (
-              <Dashboard data={data} dashboard={dashboard} />
+              <Dashboard data={data} dashboard={dashboard} onAskQuestion={handleQuestion} />
             ) : null}
             {dashboard && view === "code" ? (
               <CodeHighlighter dashboard={dashboard} />

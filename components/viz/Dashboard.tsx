@@ -8,11 +8,13 @@ import { BarChart } from "./BarChart";
 import { PieChart } from "./PieChart";
 import { className } from "../../utils/className";
 import { TreemapChart } from "./TreemapChart";
+import { DashboardQA } from "./DashboardQA";
 
 export function Dashboard(
   props: React.PropsWithChildren<{
     dashboard: IDashboard;
     data: IDataset;
+    onAskQuestion?: (question: string) => Promise<string>;
   }>
 ) {
   const [filters, setFilters] = React.useState<
@@ -36,8 +38,8 @@ export function Dashboard(
     return props.data;
   }, [filters, props.data]);
 
-  return (
-    <div className={styles.dashboardContainer}>
+  const dashboardContent = (
+    <>
       <div className={styles.filtersRow}>
         {props.dashboard.filters.map((filter, index) => (
           <DropdownFilter
@@ -79,6 +81,22 @@ export function Dashboard(
           )}
         </div>
       ))}
+    </>
+  );
+
+  return (
+    <div className={styles.dashboardContainer}>
+      {props.onAskQuestion ? (
+        <DashboardQA 
+          data={filteredData}
+          dashboard={props.dashboard}
+          onAskQuestion={props.onAskQuestion}
+        >
+          {dashboardContent}
+        </DashboardQA>
+      ) : (
+        dashboardContent
+      )}
     </div>
   );
 }
