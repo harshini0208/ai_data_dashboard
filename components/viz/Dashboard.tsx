@@ -9,6 +9,7 @@ import { PieChart } from "./PieChart";
 import { className } from "../../utils/className";
 import { TreemapChart } from "./TreemapChart";
 import { DashboardQA } from "./DashboardQA";
+import { ChartTypeSelector, ChartType } from "./ChartTypeSelector";
 
 export function Dashboard(
   props: React.PropsWithChildren<{
@@ -21,10 +22,19 @@ export function Dashboard(
     Pick<IDatasetRecord, keyof IDatasetRecord>
   >({});
 
+  const [chartTypes, setChartTypes] = React.useState<{ [key: string]: ChartType }>({});
+
   const handleFilterChange = React.useCallback((filter: string) => {
     return (value: string) => {
       setFilters((filters) => ({ ...filters, [filter]: value }));
     };
+  }, []);
+
+  const handleChartTypeChange = React.useCallback((chartIndex: number, chartType: ChartType) => {
+    setChartTypes(prev => ({
+      ...prev,
+      [chartIndex]: chartType
+    }));
   }, []);
 
   const filteredData = React.useMemo(() => {
@@ -61,26 +71,35 @@ export function Dashboard(
           />
         ))}
       </div>
-      {props.dashboard.charts.map((chart, index) => (
+      {props.dashboard.charts.map((chart, index) => {
+        const currentChartType = chartTypes[index] || chart.chartType;
+        return (
         <div
           key={`${chart.title}-${index}`}
-          className={className(styles.chartCard, styles[chart.chartType])}
+            className={className(styles.chartCard, styles[currentChartType])}
         >
+            <div className={styles.chartHeader}>
           <div className={styles.chartCardTitle}>{chart.title}</div>
-          {chart.chartType === "lineChart" && (
+              <ChartTypeSelector
+                value={currentChartType}
+                onChange={(type) => handleChartTypeChange(index, type)}
+              />
+            </div>
+            {currentChartType === "lineChart" && (
             <LineChart config={chart} data={filteredData} />
           )}
-          {chart.chartType === "barChart" && (
+            {currentChartType === "barChart" && (
             <BarChart config={chart} data={filteredData} />
           )}
-          {chart.chartType === "pieChart" && (
+            {currentChartType === "pieChart" && (
             <PieChart config={chart} data={filteredData} />
           )}
-          {chart.chartType === "treemapChart" && (
+            {currentChartType === "treemapChart" && (
             <TreemapChart config={chart} data={filteredData} />
           )}
         </div>
-      ))}
+        );
+      })}
     </>
   );
 
